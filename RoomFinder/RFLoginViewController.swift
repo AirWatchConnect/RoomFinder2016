@@ -182,6 +182,11 @@ class RFLoginViewController: UIViewController, UIAlertViewDelegate, UITextFieldD
         serverTextField.resignFirstResponder()
     }
     
+    func setURL(urlString:String){
+        self.serverTextField.text = urlString
+        loginButton!.enabled = self.serverTextField.text?.characters.count > 0
+    }
+    
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
         let nsString = textField.text! as NSString
         let newString = nsString.stringByReplacingCharactersInRange(range,

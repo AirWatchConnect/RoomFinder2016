@@ -60,6 +60,18 @@ class RFAppDelegate: UIResponder, UIApplicationDelegate, AWSDKDelegate {
     
     func receivedProfiles(profiles: [AnyObject]!) {
         print("did receieve profiles called")
+        //recieve and parse profiles
+        if let allProfiles = profiles {
+            for profile in allProfiles {
+                if let awProfile = profile as? AWProfile {
+                    //this is sdk profile
+                    if let customPayloadSettings = awProfile.customPayload?.settings {
+                    let rootViewController = self.window?.rootViewController?.childViewControllers[0] as? RFLoginViewController
+                        rootViewController?.setURL(customPayloadSettings)
+                    }
+                }
+            }
+        }
     }
 
     func wipe() {
