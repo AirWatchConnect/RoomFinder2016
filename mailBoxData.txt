@@ -1,0 +1,9 @@
+        <MailboxData xmlns="http://schemas.microsoft.com/exchange/services/2006/types">
+          <Email>
+            <Name></Name>
+            <Address>%@</Address>
+            <RoutingType>SMTP</RoutingType>
+          </Email>
+          <AttendeeType>Organizer</AttendeeType>
+          <ExcludeConflicts>false</ExcludeConflicts>     
+        </MailboxData>

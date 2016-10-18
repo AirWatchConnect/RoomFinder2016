@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+               xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <soap:Body>
+    <GetUserAvailabilityRequest xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
+      <TimeZone xmlns="http://schemas.microsoft.com/exchange/services/2006/types">
+        <Bias>300</Bias>
+        <StandardTime>
+          <Bias>0</Bias>
+          <Time>02:00:00</Time>
+          <DayOrder>5</DayOrder>
+          <Month>10</Month>
+          <DayOfWeek>Sunday</DayOfWeek>
+        </StandardTime>
+        <DaylightTime>
+          <Bias>-60</Bias>
+          <Time>02:00:00</Time>
+          <DayOrder>1</DayOrder>
+          <Month>4</Month>
+          <DayOfWeek>Sunday</DayOfWeek>
+        </DaylightTime>
+      </TimeZone>
+      <MailboxDataArray>
+%@
+      </MailboxDataArray>
+      <FreeBusyViewOptions xmlns="http://schemas.microsoft.com/exchange/services/2006/types">
+        <TimeWindow>
+          <StartTime>%@</StartTime>
+          <EndTime>%@</EndTime>
+        </TimeWindow>
+        <MergedFreeBusyIntervalInMinutes>%d</MergedFreeBusyIntervalInMinutes>
+        <RequestedView>FreeBusyMerged</RequestedView>
+      </FreeBusyViewOptions>
+    </GetUserAvailabilityRequest>
+  </soap:Body>
+</soap:Envelope>
