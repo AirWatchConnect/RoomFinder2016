@@ -7,12 +7,19 @@
 //
 
 import UIKit
+import AWSDK
 
 @UIApplicationMain
-class RFAppDelegate: UIResponder, UIApplicationDelegate {
+class RFAppDelegate: UIResponder, UIApplicationDelegate, AWSDKDelegate {
     
     var window: UIWindow?
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        
+        //Initialize SDK
+        let awc = AWController.clientInstance()
+        awc.delegate = self
+        awc.callbackScheme = "roomfinder"
+        awc.start()
         return true
     }
     
@@ -39,6 +46,42 @@ class RFAppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
+    
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject) -> Bool {
+        return AWController.clientInstance().handleOpenURL(url, fromApplication: sourceApplication)
+    }
+    
+    //MARK: AWSDKDelegate Implementation
+
+    
+    func initialCheckDoneWithError(error: NSError!) {
+        
+    }
+    
+    func receivedProfiles(profiles: [AnyObject]!) {
+        print("did receieve profiles called")
+    }
+
+    func wipe() {
+         print("AWSDK wipe callback called!")
+    }
+    
+    func lock() {
+         print("AWSDK Lock callback called!")
+    }
+    
+    func unlock() {
+         print("AWSDK UnLock callback called!")
+    }
+    
+    func stopNetworkActivity(networkActivityStatus: AWNetworkActivityStatus) {
+        
+    }
+    
+    func resumeNetworkActivity() {
+        
+    }
+    
     
 
 }
