@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AWSDK
 
 
 public enum RFCredentialError : Int {
@@ -23,6 +24,7 @@ public class RFURLSession : NSObject, NSURLSessionDataDelegate {
     private var aSyncCompletionHandler  : (NSData?, NSURLResponse?, NSError?) -> Void = { (data: NSData?,response: NSURLResponse?,error: NSError?) -> Void in }
     private var response : NSURLResponse?
     private var nsError: NSError?
+    private var sdkCouldNotHandleChallenge: Bool = false
     public override init() {
         print("init")
     }
@@ -45,7 +47,25 @@ public class RFURLSession : NSObject, NSURLSessionDataDelegate {
     
     public func URLSession(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void) {
         
-        self.handleURLSessionChallenge(session, didReceiveChallenge: challenge, completionHandler: completionHandler)
+        if(challenge.previousFailureCount == 0) {
+            do {
+                try AWController.clientInstance().canHandleProtectionSpace(challenge.protectionSpace)
+                if(AWController.clientInstance().handleChallengeForURLSessionChallenge(challenge, completionHandler: completionHandler)) {
+                    print("challenge handled successfully")
+                    print (" previous failure count" + String(challenge.previousFailureCount))
+                }
+                else {
+                    self.handleURLSessionChallenge(session, didReceiveChallenge: challenge, completionHandler: completionHandler)
+                }
+            }
+            catch {
+                self.handleURLSessionChallenge(session, didReceiveChallenge: challenge, completionHandler: completionHandler)
+            }
+        }
+        else {
+            sdkCouldNotHandleChallenge = true
+            self.handleURLSessionChallenge(session, didReceiveChallenge: challenge, completionHandler: completionHandler)
+        }
     }
     
     public func handleURLSessionChallenge(session: NSURLSession, didReceiveChallenge challenge: NSURLAuthenticationChallenge, completionHandler: (NSURLSessionAuthChallengeDisposition, NSURLCredential?) -> Void) {
@@ -66,7 +86,10 @@ public class RFURLSession : NSObject, NSURLSessionDataDelegate {
         }
         else
         {
-            let countToConsider = 0
+            var countToConsider = 0
+            if(sdkCouldNotHandleChallenge) {
+                countToConsider = 1
+            }
             if(challenge.previousFailureCount > countToConsider)
             {
                 nsError = NSError(domain: "Warning", code: RFCredentialError.Invalid.rawValue, userInfo: details)
